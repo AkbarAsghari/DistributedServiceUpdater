@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DistributedServiceUpdater.Utilities
 {
-    
+
     public class GenericRestSharp<T>
     {
         private RestClient client;
@@ -18,6 +18,7 @@ namespace DistributedServiceUpdater.Utilities
         public HttpStatusCode StatusCode { get; private set; }
         public string Url { get; private set; }
         public string ResponseContent { get; private set; }
+        public bool HaveException { get; private set; }
 
         public GenericRestSharp()
         {
@@ -26,9 +27,9 @@ namespace DistributedServiceUpdater.Utilities
 
             request = new RestRequest();
         }
-        public GenericRestSharp<T> SetToken(string token, string header = "Authorization")
+        public GenericRestSharp<T> AddHeader(string value, string header = "Authorization")
         {
-            request.AddHeader(header, token);
+            request.AddHeader(header, value);
             return this;
         }
 
@@ -53,8 +54,8 @@ namespace DistributedServiceUpdater.Utilities
 
         public GenericRestSharp<T> SetQueryParameters(Dictionary<string, object> queryParameters)
         {
-            client.BaseUrl = new Uri(client.BaseUrl?.ToString() 
-                + "?" 
+            client.BaseUrl = new Uri(client.BaseUrl?.ToString()
+                + "?"
                 + String.Join("&", queryParameters.Select(x => x.Key.ToString() + "=" + x.Value.ToString())));
             return this;
         }
@@ -70,6 +71,9 @@ namespace DistributedServiceUpdater.Utilities
 
         public T Execute()
         {
+            if (String.IsNullOrEmpty(Url))
+                throw new ArgumentNullException(nameof(Url));
+
             IRestResponse response = client.Execute(request);
 
             StatusCode = response.StatusCode;
@@ -81,7 +85,7 @@ namespace DistributedServiceUpdater.Utilities
             {
                 responseObj = JsonConvert.DeserializeObject<T>(response.Content);
             }
-            catch { }
+            catch { HaveException = true; }
 
             return responseObj;
         }
