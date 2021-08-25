@@ -19,6 +19,8 @@ namespace DistributedServiceUpdater
         /// </summary>
         public static string DownloadPath;
 
+        public static string ServiceInstallPath;
+
         internal static Uri BaseUri;
         /// <summary>
         /// for download File
@@ -33,6 +35,7 @@ namespace DistributedServiceUpdater
         public static NetworkCredential FtpCredentials;
 
 
+
         public static object CheckVersion()
         {
             UpdateModel[] versionModels = DownloadVersion();
@@ -43,16 +46,13 @@ namespace DistributedServiceUpdater
             {
                 if (versionModel.Version == CurrentServiceVersion(versionModel.ServiceName))
                     continue;
-                StartUpdate(versionModel);
+
+                new DownloadUpdate(versionModel).Start();
+
                 AddOrUpdateAppsVersion(versionModel.ServiceName, versionModel.Version);
             }
 
             return null;
-        }
-
-        private static void StartUpdate(UpdateModel versionModel)
-        {
-
         }
 
         internal static string CurrentServiceVersion(string serviceName)

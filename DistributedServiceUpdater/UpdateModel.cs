@@ -9,6 +9,7 @@ namespace DistributedServiceUpdater
     public class UpdateModel
     {
         public string ServiceName { get; set; }
+        public string ServiceExeFileName { get; set; }
         public string Version { get; set; }
         public string CheckSum { get; set; }
         public string DownloadURL { get; set; }
