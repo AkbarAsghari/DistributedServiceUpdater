@@ -67,8 +67,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DownloadUpdate.cs" />
     <Compile Include="IAuthentication.cs" />
-    <Compile Include="VersionModel.cs" />
+    <Compile Include="UpdateModel.cs" />
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -14,8 +14,20 @@ namespace DistributedServiceUpdater
     {
         public static string AppCastURL;
 
-        internal static Uri BaseUri;
+        /// <summary>
+        ///     if dont set provide Temp Path
+        /// </summary>
+        public static string DownloadPath;
 
+        internal static Uri BaseUri;
+        /// <summary>
+        /// for download File
+        /// </summary>
+        public static IAuthentication BasicAuthDownload;
+
+        /// <summary>
+        /// for download Json
+        /// </summary>
         public static IAuthentication BasicAuthXML;
 
         public static NetworkCredential FtpCredentials;
@@ -23,7 +35,7 @@ namespace DistributedServiceUpdater
 
         public static object CheckVersion()
         {
-            VersionModel[] versionModels = DownloadVersion();
+            UpdateModel[] versionModels = DownloadVersion();
             if (versionModels.Length == 0)
                 return null;
 
@@ -31,11 +43,16 @@ namespace DistributedServiceUpdater
             {
                 if (versionModel.Version == CurrentServiceVersion(versionModel.ServiceName))
                     continue;
-
+                StartUpdate(versionModel);
                 AddOrUpdateAppsVersion(versionModel.ServiceName, versionModel.Version);
             }
 
             return null;
+        }
+
+        private static void StartUpdate(UpdateModel versionModel)
+        {
+
         }
 
         internal static string CurrentServiceVersion(string serviceName)
@@ -64,7 +81,7 @@ namespace DistributedServiceUpdater
             configFile.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
         }
-        internal static VersionModel[] DownloadVersion()
+        internal static UpdateModel[] DownloadVersion()
         {
             BaseUri = new Uri(AppCastURL);
 
@@ -72,7 +89,7 @@ namespace DistributedServiceUpdater
             {
                 string json = client.DownloadString(BaseUri);
 
-                return JsonConvert.DeserializeObject<VersionModel[]>(json);
+                return JsonConvert.DeserializeObject<UpdateModel[]>(json);
             }
         }
 

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DistributedServiceUpdater
 {
-    public class VersionModel
+    public class UpdateModel
     {
         public string ServiceName { get; set; }
         public string Version { get; set; }
-        public string Hash { get; set; }
-        public string Url { get; set; }
+        public string CheckSum { get; set; }
+        public string DownloadURL { get; set; }
     }
 }
